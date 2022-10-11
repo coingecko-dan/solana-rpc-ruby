@@ -106,9 +106,10 @@ module SolanaRpcRuby
     # @param transaction_details [String]
     # @param rewards [Boolean]
     # @param commitment [String]
+    # @param max_supported_transaction_version [Integer]
     #
     # @return [Response, ApiError] Response when success, ApiError on failure.
-    def get_block(slot, encoding: '', transaction_details: '', rewards: true, commitment: nil)
+    def get_block(slot, encoding: '', transaction_details: '', rewards: true, commitment: nil, max_supported_transaction_version: nil)
       http_method = :post
       method =  create_method_name(__method__)
 
@@ -119,6 +120,7 @@ module SolanaRpcRuby
       params_hash['transactionDetails'] = transaction_details unless blank?(transaction_details)
       params_hash['rewards'] = rewards unless rewards.nil?
       params_hash['commitment'] = commitment unless blank?(commitment)
+      params_hash['maxSupportedTransactionVersion'] = max_supported_transaction_version unless max_supported_transaction_version.nil?
 
       params << slot
       params << params_hash unless params_hash.empty?
@@ -1107,9 +1109,10 @@ module SolanaRpcRuby
     # @param transaction_signature [String]
     # @param encoding [String]
     # @param commitment [String]
+    # @param max_supported_transaction_version [Integer]
     #
     # @return [Response, ApiError] Response when success, ApiError on failure.
-    def get_transaction(transaction_signature, encoding: '', commitment: nil)
+    def get_transaction(transaction_signature, encoding: '', commitment: nil, max_supported_transaction_version: nil)
       http_method = :post
       method =  create_method_name(__method__)
 
@@ -1118,6 +1121,7 @@ module SolanaRpcRuby
 
       params_hash['commitment'] = commitment unless blank?(commitment)
       params_hash['encoding'] = encoding unless blank?(encoding)
+      params_hash['maxSupportedTransactionVersion'] = max_supported_transaction_version unless max_supported_transaction_version.nil?
 
       params << transaction_signature
       params << params_hash unless params_hash.empty?
