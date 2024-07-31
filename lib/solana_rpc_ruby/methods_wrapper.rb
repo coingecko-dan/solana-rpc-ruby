@@ -106,6 +106,7 @@ module SolanaRpcRuby
     # @param transaction_details [String]
     # @param rewards [Boolean]
     # @param commitment [String]
+    # @param max_supported_transaction_version [Integer]
     #
     # @return [Response, ApiError] Response when success, ApiError on failure.
     def get_block(slot, params = {})
@@ -1111,22 +1112,24 @@ module SolanaRpcRuby
     # @param transaction_signature [String]
     # @param encoding [String]
     # @param commitment [String]
+    # @param max_supported_transaction_version [Integer]
     #
     # @return [Response, ApiError] Response when success, ApiError on failure.
-    def get_transaction(transaction_signature, encoding: '', commitment: nil)
+    def get_transaction(transaction_signature, params = {})
       http_method = :post
       method =  create_method_name(__method__)
 
-      params = []
-      params_hash = {}
+      params_build = {}
+      params_build['encoding'] = params[:encoding] unless blank?(params[:encoding])
+      params_build['commitment'] = params[:commitment] unless blank?(params[:commitment])
+      params_build['maxSupportedTransactionVersion'] =
+        params[:max_supported_transaction_version] unless blank?(params[:max_supported_transaction_version])
 
-      params_hash['commitment'] = commitment unless blank?(commitment)
-      params_hash['encoding'] = encoding unless blank?(encoding)
+      params_request = []
+      params_request << transaction_signature
+      params_request << params_build unless params_build.empty?
 
-      params << transaction_signature
-      params << params_hash unless params_hash.empty?
-
-      body = create_json_body(method, method_params: params)
+      body = create_json_body(method, method_params: params_request)
 
       send_request(body, http_method)
     end
